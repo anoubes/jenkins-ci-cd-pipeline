@@ -1,22 +1,29 @@
-pipeline {
+pipeline{
     agent any
-
-    stages {
-        stage('Build') {
-            steps {
-                echo 'Building the application'
+    tools {
+        maven "MAVEN3.9"
+        jdk "JDK17"
+    }
+    stages{
+        stage('Fetching Code'){
+            steps{
+                git branch: 'atom', url: 'https://github.com/hkhcoder/vprofile-project.git'
             }
         }
-
-        stage('Test') {
-            steps {
-                echo 'Running tests'
+        stage('Unite Tests'){
+            steps{
+                sh 'mvn test'
             }
         }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying application'
+        stage('Build'){
+            steps{
+                sh 'mvn install -DskipTests'
+            }
+            post {
+                success {
+                    echo "Archiving artifacts..."
+                    archiveArtifacts artifacts: '**/*.war'
+                }
             }
         }
     }
