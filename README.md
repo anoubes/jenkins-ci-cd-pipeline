@@ -5,6 +5,7 @@ This project demonstrates a basic CI/CD pipeline using Jenkins Pipeline as Code.
 ## Tools Used
 - Jenkins
 - Git
+- Cherry Tree (For notes)
 
 ## Pipeline Stages
 1. Build
