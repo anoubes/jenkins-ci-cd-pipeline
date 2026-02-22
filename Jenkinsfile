@@ -1,30 +1,58 @@
-pipeline{
+pipeline {
     agent any
+
     tools {
         maven "MAVEN3.9"
         jdk "JDK17"
     }
-    stages{
-        stage('Fetching Code'){
-            steps{
+
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+        timestamps()
+        ansiColor('xterm')
+        skipDefaultCheckout()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
                 git branch: 'atom', url: 'https://github.com/hkhcoder/vprofile-project.git'
             }
         }
-        stage('Unite Tests'){
-            steps{
-                sh 'mvn test'
+
+        stage('Build') {
+            steps {
+                sh 'mvn -B clean package -DskipTests'
             }
         }
-        stage('Build'){
-            steps{
-                sh 'mvn install -DskipTests'
+
+        stage('Unit Tests') {
+            steps {
+                sh 'mvn -B test'
             }
             post {
-                success {
-                    echo "Archiving artifacts..."
-                    archiveArtifacts artifacts: '**/*.war'
+                always {
+                    junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
                 }
             }
+        }
+
+        stage('Checkstyle') {
+            steps {
+                sh 'mvn -B checkstyle:checkstyle'
+            }
+            post {
+                always {
+                    recordIssues enabledForFailure: true, tools: [checkStyle(pattern: '**/target/checkstyle-result.xml')]
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            archiveArtifacts artifacts: '**/target/*.war', allowEmptyArchive: true
+            cleanWs deleteDirs: true, notFailBuild: true
         }
     }
 }

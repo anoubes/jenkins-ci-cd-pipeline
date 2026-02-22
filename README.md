@@ -1,11 +1,13 @@
 # jenkins-ci-cd-pipeline
 
 This project demonstrates a basic CI/CD pipeline using Jenkins Pipeline as Code.
+SonarQube for scan the code 
+Nexus for upload the code
 
 ## Tools Used
 - Jenkins
 - Git
-- Cherry Tree (For notes)
+- Cherry Tree (For Notes)
 
 ## Pipeline Stages
 1. Build
@@ -20,3 +22,10 @@ This project demonstrates a basic CI/CD pipeline using Jenkins Pipeline as Code.
 ## Plugins to install
 - Build Timestamp
 - S3 Publisher
+- git
+- junit
+- ansicolor
+- workspace cleanup
+- warnings next generation
+- sonarqube scanner for jenkins
+- nexus artifact uploader
